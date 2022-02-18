@@ -1,5 +1,6 @@
 const CACHE_NAME = "version-1";
-const urlsToCache = ['index.html', 'offline.html']
+const urlsToCache = ['index.html', 'offline.html'];
+
 const self = this;
 
 // Install SW
@@ -14,29 +15,30 @@ self.addEventListener('install', (event) => {
     )
 });
 
-// Listen to requests
+// Listen for requests
 self.addEventListener('fetch', (event) => {
-    event.repondWith(
+    event.respondWith(
         caches.match(event.request)
             .then(() => {
-                return fetch(event.request)  //if there is internet data, display the fetched data
-                    .catch(() => caches.match('offline.html')) // if not, show this
+                return fetch(event.request)
+                    .catch(() => caches.match('offline.html'))
             })
     )
 });
 
-// Install SW
+// Activate the SW
 self.addEventListener('activate', (event) => {
-    const cacheWhiteList = [];
-    cacheWhiteList.push(CACHE_NAME);
+    const cacheWhitelist = [];
+    cacheWhitelist.push(CACHE_NAME);
 
     event.waitUntil(
-        cache.keys().then((cacheNames) => Promise.all(
+        caches.keys().then((cacheNames) => Promise.all(
             cacheNames.map((cacheName) => {
-                if (!cacheWhiteList.ibncludes(cacheName)) {
+                if (!cacheWhitelist.includes(cacheName)) {
                     return caches.delete(cacheName);
                 }
             })
         ))
+
     )
 });
